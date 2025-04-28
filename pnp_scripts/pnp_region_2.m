@@ -19,6 +19,10 @@ end
 
 % move(x,y,theta) -> find g_val -> move(z) -> grab -> move(z=0.4) -> moveTobin -> drop -> repeat
 for i = 1:num_objects
+    % if no objects then stop
+    if (numObjects == 0)
+        break;
+    end
 
     initialIKGuess(2).JointPosition = 0.3; % modifying initial guess for pnp
 
