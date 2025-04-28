@@ -2,4 +2,4 @@
 
 experiment_script_checkit.m
 
-*.pcd
+pointclouds/
