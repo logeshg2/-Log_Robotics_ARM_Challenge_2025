@@ -25,6 +25,32 @@
 % 3.gripGoal=packGripGoal(0.209,gripGoal);
 % 4. still 4th position in not determined
 
+
+% Region 3
+% the marker is moving (so execute this first)
+% Obj 5 (marker)
+trans = [0.0219 0.413 0.40];
+rot = [pi-pi/2 -pi 0]; %[z ,y ,x]
+g_val = 0.01;
+run moveTo.m;
+rgbImage = rosReadImage(rgbsub.LatestMessage);
+[bboxes,scores,labels] = detect(detector_2, rgbImage); % marker detector_2
+close all;
+visDetection(rgbImage,bboxes,labels,scores); % visualize detection
+if (find(labels=="marker"))
+    initialIKGuess(2).JointPosition = -0.3;
+    trans = [0.0219 0.413 0.07];
+    rot = [pi-pi/2 -pi 0]; %[z ,y ,x]
+    g_val = 0.68;
+    run moveTo.m;
+    trans = [0.0219 0.413 0.4]; % move z
+    run moveTo.m;
+    initialIKGuess(2).JointPosition = 0;
+    [trans,rot,g_val] = moveTobluebin(); % drop zone
+    run moveTo.m;
+end
+
+
 % Region_1:
 [trans, rot, g_val] = generate_vars([0.46 -0.07 0.44], [pi/2 -pi 0], 0.01);
 run moveTo.m
@@ -63,18 +89,10 @@ run moveTo.m
 run moveTo.m
 
 % stacked blocks (region 1) -> d_pouch
-%{
-% block_1 (purple)
-[trans, rot, g_val] = generate_vars([0.691 -0.08 0.34], [pi/2 -pi 0], 0.01);
-run moveTo.m
-[trans, rot, g_val] = generate_vars([0.691 -0.08 0.14], [pi/2 -pi 0], 0.63);
-run moveTo.m
-pause(0.5);
-[trans, rot, g_val] = generate_vars([0.691 -0.08 0.34], [pi/2 -pi 0], 0.63);
-run moveTo.m
-[trans, rot, g_val] = moveTogreenbin();
-run moveTo.m
-%}
+% first push the stacked cubes
+%trans = [0.75 -0.09 0.1]; rot = [pi/2 -pi 0] ; g_val = 0.6;
+%run moveTo.m
+
 
 % function moveTobins:
 function [trans, rot, g_val] = generate_vars(T, R, G_V)
@@ -88,3 +106,23 @@ end
 function [trans, rot, g_val] = moveTogreenbin()
     [trans, rot, g_val] = generate_vars([-0.5 -0.4 0.48], [pi+90 pi 0], 0.01);
 end
+
+function visDetection(rgbImage,bboxes,labels,scores)
+    annotatedImage = insertObjectAnnotation(im2uint8(rgbImage), 'Rectangle',...
+        bboxes, string(labels)+":"+string(scores),'Color','r');
+    figure, imshow(annotatedImage);
+end
+
+
+%{
+% block_1 (purple)
+[trans, rot, g_val] = generate_vars([0.691 -0.08 0.34], [pi/2 -pi 0], 0.01);
+run moveTo.m
+[trans, rot, g_val] = generate_vars([0.691 -0.08 0.14], [pi/2 -pi 0], 0.67);
+run moveTo.m
+pause(0.5);
+[trans, rot, g_val] = generate_vars([0.691 -0.08 0.34], [pi/2 -pi 0], 0.67);
+run moveTo.m
+[trans, rot, g_val] = moveTogreenbin();
+run moveTo.m
+%}

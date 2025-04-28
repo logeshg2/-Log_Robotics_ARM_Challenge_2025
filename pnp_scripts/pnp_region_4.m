@@ -56,12 +56,18 @@ for i = 1:numObjects % pnp loop in this region
 
     run moveTo.m; % move(z) and grab;
     
-
+    color = "";
     % proper gripping of pouches (release gripper and grasp again)
     if (curPose(5) == 3) % only for pouches (IMP)
-        g_val = 0.45;
-        run moveTo.m;
-        g_val = 0.54;
+        %g_val = 0.45;
+        %run moveTo.m;
+        
+        % detect color from the image
+        image = rosReadImage(rgbsub.LatestMessage);
+        color = detectcolor(image);
+        disp(color);
+
+        g_val = 0.67;
         run moveTo.m;
     end
 
@@ -79,14 +85,16 @@ for i = 1:numObjects % pnp loop in this region
     if (curPose(5) == 1) % moveTobin
         [trans,rot,g_val] = moveTobluebin();
         run moveTo.m;
-    elseif (curPose(5) == 2 || curPose(5) == 3)
+    elseif (curPose(5) == 2)
+        [trans,rot,g_val] = moveTogreenbin();
+        run moveTo.m;
+    elseif (curPose(5) == 3 && (color == "red" || color == "blue"))
+        [trans,rot,g_val] = moveTobluebin();
+        run moveTo.m;
+    elseif (curPose(5) == 3 && (color == "green" || color == "purple"))
         [trans,rot,g_val] = moveTogreenbin();
         run moveTo.m;
     end
-    % trans = [0.0 0.68 0.45];
-    % rot = [pi -pi 0];
-    % g_val = 0.01;
-    % run moveTo.m;   % the robot moves to region
 end
 
 % Helper Functions:

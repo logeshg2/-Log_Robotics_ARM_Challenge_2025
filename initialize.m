@@ -38,7 +38,7 @@ addBody(ur_robot, grip, "tool0");
 showImg = true;
 det_mark_s_can = false;             % turn `on` when marker or spam can must be detected
 pnp_cubes = false;                  % turn `on` when you need to pick color blocks
-yoloScoreTh = 0.8;                  % YOLO score threshold
+yoloScoreTh = 0.7;                  % YOLO score threshold
 gridDownsample = 0.001;             % Measured point downsample grid size
 PlanrThickness = 0.01;
 normalvector = [0 0 1];
@@ -84,7 +84,7 @@ latmsg = ptsub.LatestMessage;
 ptCloud = rosReadXYZ(sub,"PreserveStructureOnRead",true);
 ptCloud = pointCloud(ptCloud);
 
-
+%{
 % load objects pointcloud
 bottle_pc = pcread("bottle.pcd");
 can_pc = pcread("can.pcd");
@@ -93,3 +93,4 @@ marker_pc = pcread("marker.pcd");
 spam_can_pc = pcread("spam_can.pcd");
 pc_list_1 = [bottle_pc, can_pc, cube_pc];
 pc_list_2 = [marker_pc, spam_can_pc];
+%}

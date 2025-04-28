@@ -10,8 +10,15 @@ run perception.m; % return objPose
 % objPose -> [x ,y ,z, theta_z,label,width]
 numObjects = height(objPose); % number of objects detected
 
+% number of objects
+if (det_mark_s_can)
+    num_objects = 1;
+else
+    num_objects = 5;
+end
+
 % move(x,y,theta) -> find g_val -> move(z) -> grab -> move(z=0.4) -> moveTobin -> drop -> repeat
-for i = 1:numObjects
+for i = 1:num_objects
 
     initialIKGuess(2).JointPosition = 0.3; % modifying initial guess for pnp
 

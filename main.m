@@ -6,17 +6,17 @@ clc;
 % Cans & Spam -> Green bin
 % Bottle & Markers -> Blue bin
 % Green & Purple cubes -> Green bin
-% Blue & Red cubes -> Blue bin
+% Blue & Red cubes -> Blutrae bin
 
 % adding required files path
 addpath("helper_scripts/")
 addpath("mat_files/")
 addpath("pnp_scripts/")
-addpath("pointclouds/")
+%addpath("pointclouds/")
 
 % Robot connection -> using ROS-IP with the gazebo simulator
-rosIP = "192.168.56.101"; % IP Address of robot
-rosIP = "192.168.1.2"; % "10.70.250.237";
+% IP Address of robot
+rosIP = "192.168.1.2"; % "10.70.250.237"; "192.168.56.101"
 rosshutdown; % shut down existing connection to ROS
 rosinit(rosIP,11311);
 disp('ROS-init over');
@@ -70,7 +70,7 @@ sendGoal(gripAct,goalMsg);
 
 % pick and place of fixed objects
 disp(newline + "Pick and place on fixed objects")
-%run pnp_fix_obj.m
+run pnp_fix_obj.m
 % need to update color cubes position and grip value -> fixed object area
 
 % autonomous pick and place (pnp)
@@ -85,14 +85,17 @@ disp(newline + "Pick and place on Region 3");
 run pnp_region_3.m;
 close all;
 
-
 % Position 4:
 disp(newline + "Pick and place on Region 4");
-% (no color blocks)
+% first pnp no cubes
 pnp_cubes = false;
 run pnp_region_4.m;
 close all;
-
+% first pnp no cubes
+pnp_cubes = true;
+run pnp_region_4.m;
+close all;
+pnp_cubes = false;
 
 % Position 2:
 disp(newline + "Pick and place on Region 2");
@@ -104,12 +107,11 @@ close all;
 det_mark_s_can = true;
 run pnp_region_2.m;
 close all;
-
+det_mark_s_can = false;
 
 % region 5
 disp(newline + "Pick and place on fixed objects")
 run pnp_fix_r_5.m
-
 
 % shutting down ros connection:
 disp(newline + "Pick and Place Complete");
@@ -118,11 +120,3 @@ rosshutdown;
 % NOTE:
 % check all the pnp_region_X.m files !!!
 % for any clarification check original main.m file
-
-% movement demo
-%{
-tf = transl(0.3, 0.0, 0.4) * rotm2tform(roty(pi/2));
-[goalconfig, ~] = ik_solver("tool0", tf, ik_weights, initialguess);
-trajGoal = packTrajGoal(goalconfig, trajGoal);
-sendGoal(trajAct,trajGoal)
-%}

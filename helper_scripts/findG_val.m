@@ -2,7 +2,7 @@
 % finding gripper value using object width
 function g_val = findG_val(obj_width, label) 
     if (label == 3) % pouches
-        g_val = 0.53; 
+        g_val = 0.5; 
     elseif (label == 2) % can's
         g_val = 0.228;
         if (obj_width > 0.0595)

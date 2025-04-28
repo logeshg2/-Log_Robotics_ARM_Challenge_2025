@@ -111,7 +111,7 @@ for i = 1:numObjects
         trans(3) = curPose(3);
     end
     if (curPose(5) == 2)  % g_val for lying can
-        g_val = 0.228;
+        g_val = 0.230;
     end
     run moveTo.m; % move(z) and grab;
 
@@ -127,35 +127,9 @@ for i = 1:numObjects
         [trans,rot,g_val] = moveTogreenbin();
         run moveTo.m;
     end
-    % trans = [-0.033 0.225 0.47];
-    % rot = [pi -pi 0];
-    % g_val = 0.01;
-    % run moveTo.m;   % the robot moves to region
 end
 
 %initialIKGuess(2).JointPosition = 0; % initialguess is modified(IMP)
-% Obj 5 (marker)
-trans = [0.0219 0.413 0.40];
-rot = [pi-pi/2 -pi 0]; %[z ,y ,x]
-g_val = 0.01;
-run moveTo.m;
-rgbImage = rosReadImage(rgbsub.LatestMessage);
-[bboxes,scores,labels] = detect(detector_2, rgbImage); % marker detector_2
-close all;
-visDetection(rgbImage,bboxes,labels,scores); % visualize detection
-if (find(labels=="marker"))
-    initialIKGuess(2).JointPosition = -0.3;
-    trans = [0.0219 0.413 0.07];
-    rot = [pi-pi/2 -pi 0]; %[z ,y ,x]
-    g_val = 0.68;
-    run moveTo.m;
-    trans = [0.0219 0.413 0.4]; % move z
-    run moveTo.m;
-    initialIKGuess(2).JointPosition = 0;
-    [trans,rot,g_val] = moveTobluebin(); % drop zone
-    run moveTo.m;
-end
-
 
 % Helper Functions:
 function [trans,rot,g_val] = moveTobluebin()
